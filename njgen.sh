@@ -1,12 +1,23 @@
 #!/bin/bash
 
 set -f
-PROGVERSION="v1.3"
+PROGVERSION="v1.4"
 TMPFILE=`mktemp`
 TMPDIR=`mktemp -d`
 trap "echo >&2; echo 'aborted.' >&2; rm -f $TMPFILE && rmdir $TMPDIR > /dev/null 2>&1; exit" SIGINT SIGTERM
 trap "rm -f $TMPFILE && rmdir $TMPDIR > /dev/null 2>&1" EXIT
 
+function help(){
+	echo "Usage: njgen.sh [-s filename] [find expression] [> output]"
+	echo
+	echo "Searches files that matches a 'find' expression and generates a JSON file ready to import into ncdu program"
+	echo "With no arguments, njgen will print in the standard output the json file with all the files in the current directory subtree"
+	echo "If -s parameter is specified, saves each filename (with the full path) into <filename>. This is useful for example if you run njgen in a large directory and you want to save the file names to process them later"
+	echo
+	echo "Example:	njgen.sh -atime +365 -mtime +365 -size +4G > myFile"
+	echo "       will look for files bigger than 4GB that have not been accesed nor modified in the last year, and save JSON info in 'myFile'. Later, you can import with 'ncdu -f myFile' and view the list with a friendly ncurses interface"
+	exit 0
+}
 
 function checkReqs() {
 	which ncdu > /dev/null 2>&1
@@ -28,6 +39,8 @@ function testFindExpr() {
 }
 
 function checkParams() {
+	[[ "X"$1 == "X-h" ]] && help
+	[[ "X"$1 == "X--help" ]] && help
 	saveFilenames=0
 	if [ "X"$1 == "X--saveFilenames" -o "X"$1 == "X-s" ]
 	then
