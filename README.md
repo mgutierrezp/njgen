@@ -83,3 +83,4 @@ CHANGELOG
 	bash expansion
 	v1.3 - 2013/09/04 - added --saveFilenames (-s) option
 	v1.4 - 2013/11/27 - added -h (--help) parameter to get some help
+	v1.5 - 2014/02/24 - changed `find' parameters position to allow, for exmaple, the -mount option

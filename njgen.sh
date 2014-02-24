@@ -29,7 +29,7 @@ function checkReqs() {
 }
 
 function testFindExpr() {
-	find $TMPDIR -type f $@ -printf '%y//%P//%s//%i//%f//%D//%h\n' > /dev/null 2>&1
+	find $TMPDIR $@ -type f -printf '%y//%P//%s//%i//%f//%D//%h\n' > /dev/null 2>&1
 	if [ $? -ne 0 ]
 	then
 		echo "ERROR: 'find' expression failed!" >&2
@@ -67,16 +67,16 @@ testFindExpr $@
 cat $0 | awk '/^## queeY7ah ##/,/EOF/{print}' > $TMPFILE
 
 echo "User 'find' expression: $@" >&2
-echo "Full exec: find . -type f $@ -printf '%y//%P//%s//%i//%f//%D//%h\n'" >&2
+echo "Full exec: find . $@ -type f -printf '%y//%P//%s//%i//%f//%D//%h\n'" >&2
 echo "Running..." >&2
 if [ $saveFilenames -eq 1 ]
 then
-	find . -type f $@ -printf '%y//%P//%s//%i//%f//%D//%h\n' | tee $saveFilenamesLOG | awk -F '//' -f $TMPFILE
+	find . $@ -type f -printf '%y//%P//%s//%i//%f//%D//%h\n' | tee $saveFilenamesLOG | awk -F '//' -f $TMPFILE
 	saveFilenamesLOGTMP=`mktemp`
 	cat $saveFilenamesLOG | awk -F '//' '{print $2}' > $saveFilenamesLOGTMP
 	mv $saveFilenamesLOGTMP $saveFilenamesLOG
 else
-	find . -type f $@ -printf '%y//%P//%s//%i//%f//%D//%h\n' | awk -F '//' -f $TMPFILE
+	find . $@ -type f -printf '%y//%P//%s//%i//%f//%D//%h\n' | awk -F '//' -f $TMPFILE
 fi
 echo "OK. Try to import JSON with 'ncdu -r -f <filename>" >&2
 
